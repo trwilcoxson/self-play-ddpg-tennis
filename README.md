@@ -39,8 +39,8 @@ A self-play DDPG agent that learns to play Tennis in a Unity ML-Agents environme
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/trwilcoxson/udacity-drl-p3-collab-compet.git
-   cd udacity-drl-p3-collab-compet
+   git clone https://github.com/trwilcoxson/self-play-ddpg-tennis.git
+   cd self-play-ddpg-tennis
    ```
 
 2. Create and activate the conda environment:
