@@ -1,3 +1,5 @@
+"""Self-play DDPG agent with noise decay, OUNoise, and ReplayBuffer for Tennis."""
+
 import numpy as np
 import random
 import copy
@@ -135,6 +137,15 @@ class OUNoise:
     """Ornstein-Uhlenbeck process for temporally correlated exploration noise."""
 
     def __init__(self, size, seed, mu=0., theta=0.15, sigma=0.2):
+        """Initialize OU noise parameters and internal state.
+
+        Args:
+            size: Shape of the noise array (num_agents, action_size).
+            seed: Random seed for reproducibility.
+            mu: Long-running mean of the process.
+            theta: Mean-reversion rate.
+            sigma: Volatility (noise scale).
+        """
         self.size = size
         self.mu = mu * np.ones(size)
         self.theta = theta
@@ -143,9 +154,11 @@ class OUNoise:
         self.reset()
 
     def reset(self):
+        """Reset internal state to the mean."""
         self.state = copy.copy(self.mu)
 
     def sample(self):
+        """Generate a noise sample using the Ornstein-Uhlenbeck process."""
         x = self.state
         dx = self.theta * (self.mu - x) + \
             self.sigma * np.random.standard_normal(self.size)
@@ -157,6 +170,14 @@ class ReplayBuffer:
     """Fixed-size buffer to store experience tuples."""
 
     def __init__(self, action_size, buffer_size, batch_size, seed):
+        """Initialize replay buffer with given capacity and batch size.
+
+        Args:
+            action_size: Dimension of each action.
+            buffer_size: Maximum number of experiences to store.
+            batch_size: Number of experiences to sample per learning step.
+            seed: Random seed for reproducibility.
+        """
         self.action_size = action_size
         self.memory = deque(maxlen=buffer_size)
         self.batch_size = batch_size
@@ -166,10 +187,12 @@ class ReplayBuffer:
         self.seed = random.seed(seed)
 
     def add(self, state, action, reward, next_state, done):
+        """Add a new experience tuple to the buffer."""
         e = self.experience(state, action, reward, next_state, done)
         self.memory.append(e)
 
     def sample(self):
+        """Randomly sample a batch of experiences as GPU tensors."""
         experiences = random.sample(self.memory, k=self.batch_size)
 
         states = torch.from_numpy(
@@ -192,4 +215,5 @@ class ReplayBuffer:
         return (states, actions, rewards, next_states, dones)
 
     def __len__(self):
+        """Return the current number of experiences stored."""
         return len(self.memory)

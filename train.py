@@ -3,7 +3,6 @@
 Run: conda activate drlnd-nav && python -u train.py
 Produces: checkpoint_actor.pth, checkpoint_critic.pth, scores.npy, scores_plot.png
 """
-import sys
 import time
 import numpy as np
 import torch

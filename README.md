@@ -61,17 +61,18 @@ A self-play DDPG agent that learns to play Tennis in a Unity ML-Agents environme
    python -m ipykernel install --user --name drlnd-nav --display-name "Python (drlnd-nav)"
    ```
 
-5. Download the Tennis environment for your OS and place it in the project root:
+5. Download the Tennis environment for your OS, unzip it, and place it in the project root:
    - [macOS](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis.app.zip)
    - [Linux](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis_Linux.zip)
    - [Windows 64-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis_Windows_x86_64.zip)
+   - [Windows 32-bit](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P3/Tennis/Tennis_Windows_x86.zip)
 
    **macOS users**: After unzipping, remove the quarantine attribute so the app can launch:
    ```bash
    xattr -cr Tennis.app
    ```
 
-   **Linux/Windows users**: Update the `file_name` path in the notebook's environment initialization cell to match your downloaded binary.
+   **Linux/Windows users**: After unzipping, update the `file_name` path in the notebook's environment initialization cell to match your extracted binary (e.g., `Tennis_Linux/Tennis.x86_64` or `Tennis_Windows_x86_64/Tennis.exe`).
 
 ## Training
 

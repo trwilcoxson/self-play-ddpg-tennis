@@ -1,3 +1,5 @@
+"""Actor and Critic neural network architectures for self-play DDPG."""
+
 import numpy as np
 
 import torch
@@ -6,6 +8,7 @@ import torch.nn.functional as F
 
 
 def hidden_init(layer):
+    """Compute fan-in based uniform initialization bounds for a layer."""
     fan_in = layer.weight.data.size()[1]
     lim = 1. / np.sqrt(fan_in)
     return (-lim, lim)
@@ -15,6 +18,15 @@ class Actor(nn.Module):
     """Actor (Policy) Model — maps states to deterministic actions."""
 
     def __init__(self, state_size, action_size, seed, fc1_units=128, fc2_units=128):
+        """Initialize Actor network layers.
+
+        Args:
+            state_size: Dimension of each state observation.
+            action_size: Dimension of each action.
+            seed: Random seed for reproducibility.
+            fc1_units: Number of units in the first hidden layer.
+            fc2_units: Number of units in the second hidden layer.
+        """
         super(Actor, self).__init__()
         self.seed = torch.manual_seed(seed)
         self.fc1 = nn.Linear(state_size, fc1_units)
@@ -23,11 +35,13 @@ class Actor(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
+        """Initialize weights with fan-in uniform (hidden) and small uniform (output)."""
         self.fc1.weight.data.uniform_(*hidden_init(self.fc1))
         self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
         self.fc3.weight.data.uniform_(-3e-3, 3e-3)
 
     def forward(self, state):
+        """Map state to action values in [-1, 1]."""
         x = F.relu(self.fc1(state))
         x = F.relu(self.fc2(x))
         return torch.tanh(self.fc3(x))
@@ -38,6 +52,16 @@ class Critic(nn.Module):
 
     def __init__(self, state_size, action_size, seed, fcs1_units=128,
                  fc2_units=128, fc3_units=64):
+        """Initialize Critic network layers.
+
+        Args:
+            state_size: Dimension of each state observation.
+            action_size: Dimension of each action.
+            seed: Random seed for reproducibility.
+            fcs1_units: Number of units in the first hidden layer.
+            fc2_units: Number of units in the second hidden layer.
+            fc3_units: Number of units in the third hidden layer.
+        """
         super(Critic, self).__init__()
         self.seed = torch.manual_seed(seed)
         self.fcs1 = nn.Linear(state_size, fcs1_units)
@@ -47,12 +71,14 @@ class Critic(nn.Module):
         self.reset_parameters()
 
     def reset_parameters(self):
+        """Initialize weights with fan-in uniform (hidden) and small uniform (output)."""
         self.fcs1.weight.data.uniform_(*hidden_init(self.fcs1))
         self.fc2.weight.data.uniform_(*hidden_init(self.fc2))
         self.fc3.weight.data.uniform_(*hidden_init(self.fc3))
         self.fc4.weight.data.uniform_(-3e-3, 3e-3)
 
     def forward(self, state, action):
+        """Map (state, action) pair to Q-value. Actions injected after first layer."""
         xs = F.relu(self.fcs1(state))
         x = torch.cat((xs, action), dim=1)
         x = F.relu(self.fc2(x))
