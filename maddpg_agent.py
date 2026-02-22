@@ -34,6 +34,14 @@ class Agent():
     """
 
     def __init__(self, state_size, action_size, num_agents, random_seed):
+        """Initialize agent with actor-critic networks, noise process, and replay buffer.
+
+        Args:
+            state_size: Dimension of each state observation.
+            action_size: Dimension of each action.
+            num_agents: Number of agents in the environment.
+            random_seed: Random seed for reproducibility.
+        """
         self.state_size = state_size
         self.action_size = action_size
         self.num_agents = num_agents
