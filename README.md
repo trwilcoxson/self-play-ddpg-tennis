@@ -64,23 +64,29 @@ xattr -cr Tennis.app
 
 ## Instructions
 
-To train the agent from scratch:
+### Training from Scratch (Notebook)
 
-```bash
-conda activate drlnd-nav
-jupyter notebook Tennis.ipynb
-```
+1. Activate the environment and launch Jupyter:
+   ```bash
+   conda activate drlnd-nav
+   jupyter notebook Tennis.ipynb
+   ```
+2. Select the **"Python (drlnd-nav)"** kernel.
+3. Click **Cell → Run All**. The first code cell fixes a `protobuf` compatibility issue — if it triggers a kernel restart, simply click **Cell → Run All** again.
+4. The notebook will:
+   - Initialize the Tennis environment
+   - Train a self-play DDPG agent (typically solves in 1000–2000 episodes)
+   - Save model weights to `checkpoint_actor.pth` and `checkpoint_critic.pth`
+   - Plot the training scores
+   - Run a 100-episode greedy evaluation
 
-Select the **"Python (drlnd-nav)"** kernel and run all cells. The notebook will:
-1. Initialize the Tennis environment
-2. Train a self-play DDPG agent (typically solves in 1000–2000 episodes)
-3. Save model weights to `checkpoint_actor.pth` and `checkpoint_critic.pth`
-4. Plot the training scores
-5. Run a 100-episode greedy evaluation with the trained weights
+### Using Pre-Trained Weights
 
-To watch the trained agent play without retraining, skip the training cell and load the pre-trained `.pth` weights directly.
+To skip training, load the provided `checkpoint_actor.pth` and `checkpoint_critic.pth` directly by running the plotting cell (Section 4) and greedy evaluation cell (Section 5).
 
-Alternatively, run the standalone training script:
+### Standalone Training Script
+
+Alternatively, train via the command line:
 ```bash
 conda activate drlnd-nav
 python -u train.py
