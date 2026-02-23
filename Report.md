@@ -45,7 +45,7 @@ For exploration, DDPG adds Ornstein-Uhlenbeck noise to the actor's output:
 dx = θ(μ - x)dt + σdW
 ```
 
-**Noise decay** is the critical adaptation for this environment. In the Continuous Control project (P2), constant exploration noise worked because the reward signal was dense — the agent received feedback every timestep. Tennis has **sparse rewards**: +0.1 only when the ball crosses the net, -0.01 when it hits the ground. This means:
+**Noise decay** is the critical adaptation for this environment. In the [Continuous Control project](https://github.com/trwilcoxson/ddpg-continuous-control), constant exploration noise worked because the reward signal was dense — the agent received feedback every timestep. Tennis has **sparse rewards**: +0.1 only when the ball crosses the net, -0.01 when it hits the ground. This means:
 
 1. **Early training**: The agent needs aggressive exploration (σ = 0.2) to discover that hitting the ball is rewarded at all.
 2. **Mid training**: As the agent learns to rally, noise must decrease so it doesn't disrupt the fragile cooperative equilibrium.
@@ -86,7 +86,7 @@ Input (24) → FC1 (128, ReLU) → [concat action (2)] → FC2 (130→128, ReLU)
 
 Actions are injected after the first hidden layer (as recommended in the DDPG paper). The narrowing architecture (128 → 64 → 1) forces the critic to form compressed representations, which helps with generalization in sparse-reward settings.
 
-**No BatchNorm**: The P2 ablation study showed BatchNorm provides only a modest convergence advantage (~7% fewer episodes) for DDPG. Tennis has a simpler state space (24 dims, all in similar ranges) compared to Reacher (33 dims with mixed physical units), making BatchNorm unnecessary.
+**No BatchNorm**: The [Continuous Control ablation study](https://github.com/trwilcoxson/ddpg-continuous-control) showed BatchNorm provides only a modest convergence advantage (~7% fewer episodes) for DDPG. Tennis has a simpler state space (24 dims, all in similar ranges) compared to Reacher (33 dims with mixed physical units), making BatchNorm unnecessary.
 
 **Weight initialization**: Hidden layers use fan-in uniform initialization (±1/√fan_in). Output layers use uniform(-3e-3, 3e-3) to ensure initial outputs are near zero.
 
@@ -94,24 +94,24 @@ Actions are injected after the first hidden layer (as recommended in the DDPG pa
 
 | Parameter | Value | Rationale |
 |---|---|---|
-| Replay buffer size | 100,000 | Smaller than P2 (2 agents vs. 20; less experience per episode) |
-| Batch size | 128 | Standard size; smaller than P2's 256 due to less data |
+| Replay buffer size | 100,000 | Smaller than Reacher (2 agents vs. 20; less experience per episode) |
+| Batch size | 128 | Standard size; smaller than Reacher's 256 due to less data |
 | Discount factor (γ) | 0.99 | Standard; values future rewards highly |
 | Soft update rate (τ) | 0.001 | Slow blending for target network stability |
 | Actor learning rate | 1e-4 | Standard DDPG, Adam optimizer |
 | Critic learning rate | 1e-3 | 10x actor LR (standard DDPG practice) |
-| Learn every | 1 step | Only 2 agents producing transitions (vs. 20 in P2) |
-| Num updates | 1 | Single update per step (vs. 10 in P2) |
+| Learn every | 1 step | Only 2 agents producing transitions (vs. 20 in Reacher) |
+| Num updates | 1 | Single update per step (vs. 10 in Reacher) |
 | OU θ | 0.15 | Standard mean-reversion rate |
 | OU σ (initial) | 0.2 | Standard noise scale |
 | **Noise decay** | **0.9995/episode** | Reduces σ from 0.2 → ~0.09 by episode 1500 |
 | **Noise floor** | **0.01** | Prevents noise from vanishing completely |
 | Gradient clipping | 1.0 | Clips critic gradients to stabilize training |
-| Max episodes | 5,000 | Patience for sparse rewards (P2 needed only 300) |
+| Max episodes | 5,000 | Patience for sparse rewards (Reacher needed only 300) |
 
-### Key Differences from P2 (Continuous Control)
+### Key Differences from Continuous Control (Reacher)
 
-| Parameter | P2 (Reacher) | P3 (Tennis) | Why |
+| Parameter | Reacher | Tennis | Why |
 |---|---|---|---|
 | Buffer size | 1,000,000 | 100,000 | 2 agents vs. 20; much less data |
 | Batch size | 256 | 128 | Proportional to data availability |
